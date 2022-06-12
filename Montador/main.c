@@ -62,10 +62,11 @@ int main(){
     char* tok;
     char instruction[100];
     arq = fopen("teste","rt");
-    int PC = 0;
+    int PC = 1;
     while(!feof(arq)){
         read = fgets(instruction, 100, arq);
         if(read){
+            PC++;
             //printf("Linha %d: %s", PC, instruction);
             tok = strtok(instruction," ");
             if(tok != NULL && strstr(tok,":") == NULL){ // Caso não seja uma label
@@ -74,7 +75,6 @@ int main(){
                 printf(" %s",tok);
             }
         }
-        PC++;
     }
     fclose(arq);
     return 0;
