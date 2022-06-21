@@ -100,7 +100,6 @@ int check_data(Data data[], int symbol_counter, char symbol, int* catch) {
 void add_symbol(char *line, Data data[], int* symbol_counter, int* pos_counter) {
     //caso tenha :
     if(strstr(line,":") != NULL){
-        (*pos_counter)++; //incrementa o contador (ele nao sera incrementado na check_intruction)
         if(check_data(data, *symbol_counter, line[0],NULL)) { //verifica se o simbolo ja nao esta presente na lista
             data[*symbol_counter].symbol = line[0]; // salva simbolo
             data[*symbol_counter].value = *pos_counter; // salva posicao
@@ -116,12 +115,12 @@ void print_data(Data data[], int count) {
     }
 }
 
-int main(){
+int main(int argc, char *argv[]){
     FILE* arq;
     char *read, *tok2, *op, *opn;
     Data data[1000];
     char instruction[100];
-    arq = fopen("teste","rt");
+    arq = fopen(argv[1],"rt");
 
     int symbol_counter = 0; // registra a quantidade de simbolos
     int pos_counter = 0; // registra a posicao
@@ -129,18 +128,19 @@ int main(){
     while(!feof(arq)){
         read = fgets(instruction, 100, arq);
         if(read){
-            PC++;
             tok2 = strtok(instruction," ");
             if(tok2 != NULL){
                 //check_intruction(tok2, &pos_counter, PC);
-                update_ilc(tok2,&pos_counter);
                 add_symbol(tok2, data, &symbol_counter, &pos_counter);
-                tok2 = strtok (NULL, " ");
+                if(strstr(tok2,":") != NULL){
+                    tok2 = strtok (NULL, " ");
+                }
+                update_ilc(tok2,&pos_counter);
             }
         }
     }
     fclose(arq);
-    arq = fopen("teste","rt");
+    arq = fopen(argv[1],"rt");
     int pos_symbol;
     pos_counter = 0;
 
