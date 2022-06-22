@@ -2,68 +2,60 @@
 #include <stdlib.h>
 #include <string.h>
 
-int PC = 1;
-int AC = 0;
-int SP = 999;
-
-int pass_one(FILE* arq){
-    return 0;
-}
-
 typedef struct {
     char symbol;
     int value;
 } Data;
 
-int check_intruction(char *line){
+int check_intruction(char *line, FILE* out){
     if(strstr(line,"LOAD") != NULL){
-        printf("1 ");
+        fprintf(out,"1 ");
     }
     if(strstr(line,"STORE") != NULL){
-        printf("2 ");
+        fprintf(out,"2 ");
     }
     if(strstr(line,"ADD") != NULL){
-        printf("3 ");
+        fprintf(out,"3 ");
     }
     if(strstr(line,"SUB") != NULL){
-        printf("4 ");
+        fprintf(out,"4 ");
     }
     if(strstr(line,"JMP") != NULL){
-        printf("5 ");
+        fprintf(out,"5 ");
     }
     if(strstr(line,"JPG") != NULL){
-        printf("6 ");
+        fprintf(out,"6 ");
     }
     if(strstr(line,"JPL") != NULL){
-        printf("7 ");
+        fprintf(out,"7 ");
     }
     if(strstr(line,"JPE") != NULL){
-        printf("8 ");
+        fprintf(out,"8 ");
     }
     if(strstr(line,"JPNE") != NULL){
-        printf("9 ");
+        fprintf(out,"9 ");
     }
     if(strstr(line,"PUSH") != NULL){
-        printf("10 ");
+        fprintf(out,"10 ");
     }
     if(strstr(line,"POP") != NULL){
-        printf("11 ");
+        fprintf(out,"11 ");
     }
     if(strstr(line,"READ") != NULL){
-        printf("12 ");
+        fprintf(out,"12 ");
     }
     if(strstr(line,"WRITE") != NULL){
-        printf("13 ");
+        fprintf(out,"13 ");
     }
     if(strstr(line,"CALL") != NULL){
-        printf("14 ");
+        fprintf(out,"14 ");
     }
     if(strstr(line,"RET") != NULL){
-        printf("15 ");
+        fprintf(out,"15 ");
         return 1;
     }
     if(strstr(line,"HALT") != NULL){
-        printf("16 ");
+        fprintf(out,"16 ");
         return 1;
     }
     if(strstr(line,"WORD") != NULL || strstr(line,"END") != NULL){
@@ -75,11 +67,11 @@ int check_intruction(char *line){
 //atualiza posição da memória
 void update_ilc(char* line, int* pos_counter){
     //se nao for RET/HALT conta 2, pois esses comandos contam como 1
-    if(strstr(line,"WORD") == NULL && strstr(line,"RET") == NULL && strstr(line,"HALT") == NULL && strstr(line,":") == NULL){
+    if(strstr(line,"END") == NULL && strstr(line,"WORD") == NULL && strstr(line,"RET") == NULL && strstr(line,"HALT") == NULL && strstr(line,":") == NULL){
         (*pos_counter) += 2;
     
     //se for RET/HALT/WORD conta apenas 1
-    } else if(strstr(line,":") == NULL){
+    } else if(strstr(line,":") == NULL && strstr(line,"END") == NULL){
         (*pos_counter) ++;
     }
 }
@@ -140,7 +132,13 @@ int main(int argc, char *argv[]){
         }
     }
     fclose(arq);
+
     arq = fopen(argv[1],"rt");
+    FILE* output = fopen(argv[2],"wt");
+
+    fprintf(output,"MV1 0 999 %d ",pos_counter);
+
+
     int pos_symbol;
     pos_counter = 0;
 
@@ -149,6 +147,7 @@ int main(int argc, char *argv[]){
         if(read){          
             tok2 = strtok(instruction," ");
             if(tok2 != NULL){
+                // L: WRITE A
                 if(strstr(tok2,":") == NULL){ //Não é label
                     op = tok2; //Operador
                     opn = strtok (NULL, " "); //Operando
@@ -157,13 +156,15 @@ int main(int argc, char *argv[]){
                     op  = strtok(NULL, " "); //Operador
                     opn = strtok(NULL, " "); //Operando
                 }
-                if(check_intruction(op) == 0){                    
+                
+                if(check_intruction(op,output) == 0){                    
                     
                     update_ilc(op,&pos_counter);
                     check_data(data, symbol_counter, *opn, &pos_symbol);
-                    printf("%d ", pos_symbol-pos_counter);
+                    fprintf(output,"%d ", pos_symbol-pos_counter);
+
                 }else if(strstr(op,"WORD") != NULL){
-                    printf("%c ",*opn);
+                    fprintf(output,"%c ",*opn);
                     update_ilc(op,&pos_counter);
                 }
                 else{
