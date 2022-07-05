@@ -48,8 +48,12 @@ extern YYSTYPE cool_yylval;
 /*
  * Define names for regular expressions here.
  */
-
 DARROW          =>
+
+INTEGER       [0-9]+
+ID            [A-Za-z0-9_]
+TYPE_ID       [A-Z][]
+OBJECT_ID     [a-z][]
 
 %%
 
