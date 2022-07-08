@@ -49,13 +49,22 @@ extern YYSTYPE cool_yylval;
 /*
  * Define names for regular expressions here.
  */
+ASSIGN          <-
 DARROW          =>
+LE              <=
+
 
 INTEGER       [0-9]+
 TYPE          [A-Z][A-Za-z0-9_]+
 OBJECT	      [a-z][a-zA-Z0-9_]+
 
+TRUE          (t)(?i:rue)
+FALSE         (f)(?i:alse)
+
 %%
+\n    curr_lineno++;
+
+
 {INTEGER}	{
 cool_yylval.symbol = inttable.add_string(yytext);
 return INT_CONST;
@@ -70,12 +79,31 @@ return INT_CONST;
  /*
   *  The multiple-character operators.
   */
+{ASSIGN}    { return (ASSIGN); }
 {DARROW}		{ return (DARROW); }
+{LE}        { return {LE}}
 
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
+(?i:class)      return CLASS;
+(?i:else)       return ELSE;
+(?i:fi)         return FI;
+(?i:if)         return IF;
+(?i:in)         return IN;
+(?i:inherits)   return INHERITS;
+(?i:let)        return LET;
+(?i:loop)       return LOOP;
+(?i:pool)       return POOL;
+(?i:then)       return THEN;
+(?i:while)      return WHILE;
+(?i:case)       return CASE;
+(?i:esac)       return ESAC;
+(?i:of)         return OF;
+(?i:new)        return NEW;
+(?i:isvoid)     return ISVOID;
+(?i:not)        return NOT;
 
 
  /*
@@ -84,6 +112,4 @@ return INT_CONST;
   *  \n \t \b \f, the result is c.
   *
   */
-
-
 %%
