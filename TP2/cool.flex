@@ -73,7 +73,7 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 
 {INTEGER}	
     {
-      cool_yylval.symbol = inttable.add_string(yytext);
+      cool_yylval.symbol = inttable.add_int(yytext);
       return INT_CONST;
 		}
 
@@ -99,7 +99,7 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 
 "*)"
       {
-        cool.yylval.error_msg = "Fecha comentário não aberto"
+        cool.yylval.error_msg = "Unmatched *)"
         return ERROR;
       }
 
@@ -117,12 +117,12 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 <COMMENT>"*)"
     {
       comment_op--;
-      if(comment_op == 0)
+      if(comment_op==0)
         BEGIN(INITIAL);
     }
 <COMMENT><<EOF>>
     {
-      cool_yylval.error_msg = "EOF no comentario";
+      cool_yylval.error_msg = "EOF in comment";
       BEGIN(INITIAL);
       comment_op = 0;
       return ERROR;
@@ -171,7 +171,7 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 
 {SC}
     {
-      return int(yytext[0]);
+      return (yytext);
     }
 
 
