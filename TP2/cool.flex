@@ -44,8 +44,11 @@ extern YYSTYPE cool_yylval;
  *  Add Your own definitions here
  */
 
+ int comment_op = 0;
+
 %}
 
+%x STRING COMMENT
 /*
  * Define names for regular expressions here.
  */
@@ -61,49 +64,116 @@ OBJECT	      [a-z][a-zA-Z0-9_]+
 TRUE          (t)(?i:rue)
 FALSE         (f)(?i:alse)
 
+WS            [ \n\f\r\t\v]
+SC            +|/|-|*|=|<|.|~|,|;|:|(|)|@|{|}
+
 %%
 \n    curr_lineno++;
 
 
-{INTEGER}	{
-cool_yylval.symbol = inttable.add_string(yytext);
-return INT_CONST;
+{INTEGER}	
+    {
+      cool_yylval.symbol = inttable.add_string(yytext);
+      return INT_CONST;
 		}
+
+{TYPE}
+    {
+      cool_yylval.symbol = idtable.add_string(yytext);
+      return TYPEID;
+    }
+
+{OBJECT}|(self)
+    {
+      cool_yylval.symbol = idtable.add_string(yytext);
+      return OBJECTID;
+    }
 
 
  /*
   *  Nested comments
   */
 
+  --[.]*
+
+
+*)
+      {
+        cool.yylval.error_msg = "Fecha comentário não aberto"
+        return ERROR;
+      }
+
+(*
+    {
+      comment_op++;
+      BEGIN(COMMENT);
+    }
+
+<COMMENT>(*
+    {
+      comment_op++;
+    }
+
+<COMMENT>*)
+    {
+      comment_op--;
+      if(comment_op == 0){
+        BEGIN(INITIAL);
+      }
+    }
+<COMMENT><<EOF>>
+    {
+      cool_yylval.error_msg = "EOF no comentario";
+      BEGIN(INITIAL);
+      comment_op = 0;
+      return ERROR;
+    }
 
  /*
   *  The multiple-character operators.
   */
 {ASSIGN}    { return (ASSIGN); }
 {DARROW}		{ return (DARROW); }
-{LE}        { return {LE}}
+{LE}        { return (LE);}
 
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
-(?i:class)      return CLASS;
-(?i:else)       return ELSE;
-(?i:fi)         return FI;
-(?i:if)         return IF;
-(?i:in)         return IN;
-(?i:inherits)   return INHERITS;
-(?i:let)        return LET;
-(?i:loop)       return LOOP;
-(?i:pool)       return POOL;
-(?i:then)       return THEN;
-(?i:while)      return WHILE;
-(?i:case)       return CASE;
-(?i:esac)       return ESAC;
-(?i:of)         return OF;
-(?i:new)        return NEW;
-(?i:isvoid)     return ISVOID;
-(?i:not)        return NOT;
+(?i:class)     { return (CLASS);}
+(?i:else)      { return (ELSE);}
+(?i:fi)        { return (FI);}
+(?i:if)        { return (IF);}
+(?i:in)        { return (IN);}
+(?i:inherits)  { return (INHERITS);}
+(?i:let)       { return (LET);}
+(?i:loop)      { return (LOOP);}
+(?i:pool)      { return (POOL);}
+(?i:then)      { return (THEN);}
+(?i:while)     { return (WHILE);}
+(?i:case)      { return (CASE);}
+(?i:esac)      { return (ESAC);}
+(?i:of)        { return (OF);}
+(?i:new)       { return (NEW);}
+(?i:isvoid)    { return (ISVOID);}
+(?i:not)       { return (NOT);}
+
+{TRUE} 
+      {
+        cool_yylval.boolean = true;
+        return BOOL_CONST;
+      }
+
+{FALSE} 
+        {
+          cool_yylval.boolean = false;
+          return BOOL_CONST;
+        }
+
+{SC}
+    {
+      return int(yytext[0]);
+    }
 
 
  /*
