@@ -65,7 +65,7 @@ TRUE          (t)(?i:rue)
 FALSE         (f)(?i:alse)
 
 WS            [ \n\f\r\t\v]
-SC            +|/|-|*|=|<|.|~|,|;|:|(|)|@|{|}
+SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 
 %%
 \n    curr_lineno++;
@@ -97,13 +97,13 @@ SC            +|/|-|*|=|<|.|~|,|;|:|(|)|@|{|}
   --[.]*
 
 
-*)
+"*)"
       {
         cool.yylval.error_msg = "Fecha comentário não aberto"
         return ERROR;
       }
 
-(*
+"(*"
     {
       comment_op++;
       BEGIN(COMMENT);
