@@ -52,11 +52,15 @@ extern YYSTYPE cool_yylval;
 DARROW          =>
 
 INTEGER       [0-9]+
-ID            [A-Za-z0-9_]
-TYPE_ID       [A-Z][]
-OBJECT_ID     [a-z][]
+TYPE          [A-Z][A-Za-z0-9_]+
+OBJECT	      [a-z][a-zA-Z0-9_]+
 
 %%
+{INTEGER}	{
+cool_yylval.symbol = inttable.add_string(yytext);
+return INT_CONST;
+		}
+
 
  /*
   *  Nested comments
