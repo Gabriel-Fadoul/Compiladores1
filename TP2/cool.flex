@@ -109,12 +109,12 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
       BEGIN(COMMENT);
     }
 
-<COMMENT>(*
+<COMMENT>"(*"
     {
       comment_op++;
     }
 
-<COMMENT>*)
+<COMMENT>"*)"
     {
       comment_op--;
       if(comment_op == 0){
