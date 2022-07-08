@@ -117,9 +117,8 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 <COMMENT>"*)"
     {
       comment_op--;
-      if(comment_op == 0){
+      if(comment_op == 0)
         BEGIN(INITIAL);
-      }
     }
 <COMMENT><<EOF>>
     {
