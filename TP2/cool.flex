@@ -52,9 +52,9 @@ extern YYSTYPE cool_yylval;
 /*
  * Define names for regular expressions here.
  */
-ASSIGN          <-
-DARROW          =>
-LE              <=
+ASSIGN          "<-"
+DARROW          "=>"
+LE              "<="
 
 
 INTEGER       [0-9]+
@@ -68,23 +68,18 @@ WS            [ \n\f\r\t\v]
 SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 
 %%
-\n    curr_lineno++;
 
-
-{INTEGER}	
-    {
-      cool_yylval.symbol = inttable.add_int(yytext);
+{INTEGER}	{
+      cool_yylval.symbol = inttable.add_string(yytext);
       return INT_CONST;
-		}
+	}
 
-{TYPE}
-    {
+{TYPE}	{
       cool_yylval.symbol = idtable.add_string(yytext);
       return TYPEID;
     }
 
-{OBJECT}|(self)
-    {
+{OBJECT}|(self)	{
       cool_yylval.symbol = idtable.add_string(yytext);
       return OBJECTID;
     }
@@ -97,31 +92,26 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
   --[.]*
 
 
-"*)"
-      {
-        cool.yylval.error_msg = "Unmatched *)"
+"*)"	{
+        cool_yylval.error_msg = "Unmatched *)";
         return ERROR;
       }
 
-"(*"
-    {
+"(*"	{
       comment_op++;
       BEGIN(COMMENT);
     }
 
-<COMMENT>"(*"
-    {
+<COMMENT>"(*"	{
       comment_op++;
     }
 
-<COMMENT>"*)"
-    {
+<COMMENT>"*)"	{
       comment_op--;
       if(comment_op==0)
         BEGIN(INITIAL);
     }
-<COMMENT><<EOF>>
-    {
+<COMMENT><<EOF>>	{
       cool_yylval.error_msg = "EOF in comment";
       BEGIN(INITIAL);
       comment_op = 0;
@@ -157,23 +147,21 @@ SC            "+"|"/"|"-"|"*"|"="|"<"|"."|"~"|","|";"|":"|"("|")"|"@"|"{"|"}"
 (?i:isvoid)    { return (ISVOID);}
 (?i:not)       { return (NOT);}
 
-{TRUE} 
-      {
+{TRUE} {
         cool_yylval.boolean = true;
         return BOOL_CONST;
       }
 
-{FALSE} 
-        {
+{FALSE} {
           cool_yylval.boolean = false;
           return BOOL_CONST;
         }
 
-{SC}
-    {
-      return (yytext);
+{SC}	{
+      return int(yytext[0]);
     }
 
+\n   {curr_lineno++;}
 
  /*
   *  String constants (C syntax)
