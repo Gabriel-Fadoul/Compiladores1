@@ -123,3 +123,15 @@ Instructions
 Write-up for PA2
 ----------------
 
+## TRABALHO PRÁTICO II
+### Alunos
+- Carlos Magalhães Silva - 2021421885
+- Gabriel Arcanjo Campelo Fadoul - 2021031645
+
+### Introdução
+
+Nessa parte do projeto foi desenvolvido o analizador léxico. Para tal, no arquivo "cool.flex" foram feitas definições da linguagem Cool de acordo com as especificações da mesma.
+
+### Desenvolvimento
+
+No desenvolvimento do analisador foram feitas as definições das expressões regulares que definem símbolos e operadores da linguagem e a criação das funcões para montar a tabela. No caso dos identificadores reservados, é retornado o token que os representa. Para os integers, true, false, type e object é retornado o token que os define e seu valor é armazenado. No caso dos comentários, é feito um controle para marcar quando ele começa e retornar um erro caso não termine. Se "\*)" for encontrado antes de "(*", também é gerado um erro.
