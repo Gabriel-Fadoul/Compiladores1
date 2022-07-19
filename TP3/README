@@ -142,3 +142,22 @@ Instructions
 
 Write-up for PA3
 ----------------
+
+
+## TRABALHO PRÁTICO III
+### Alunos
+- Carlos Magalhães Silva - 2021421885
+- Gabriel Arcanjo Campelo Fadoul - 2021031645
+
+
+Nessa parte do projeto foi desenvolvido o parser da linguagem cool. Para isso, no arquivo "cool.y" foram feitas alterações com o intuito de definir as configurações necessárias para rodas o parser.
+
+Inicialmente foram adicionadas declarações de tipo para novos não terminais introduzidos. Essas declarações seguem o padrão do bison, que é feito da seguinte maneira:
+
+ -	`%type <type> nonterminal`
+
+Em seguida foram definidas as regras de precedência de operadores de acordo com a sintaxe definida no manual do cool. Todas as operações binárias são associativas à esquerda, com exceção da atribuição, que é associativa à direita e as operações de comparação, que são não associativas. A definição das regras de precedência segue o seguinte padrão:
+
+ -	`%left, %right and %nonassoc`
+
+Por fim, foram feitas as declarações das regras que definem o tipo de cada expressão do cool em um determinado contexto. A implementação seguiu as regras que foram especificadas no manual do cool.
