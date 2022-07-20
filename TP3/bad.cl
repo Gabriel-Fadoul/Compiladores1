@@ -27,3 +27,23 @@ Class D inherts A {
 Class E inherits A {
 ;
 
+class VirgulaErrada {
+  teste(v1: Int, v2: Int): String { "Teste" };
+  execTeste(): String { teste(2, 2,) };
+};
+
+class PVDuplo {
+  teste(): String {
+    {
+      "Teste";;
+    }
+  };
+};
+
+class RetornoErrado {
+  teste(): Int {
+    {
+      "Teste";;
+    }
+  };
+};
