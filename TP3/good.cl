@@ -4,20 +4,21 @@ class A {
 Class BB__ inherits A {
 };
 
+
 class Pessoa {
   name: String <- "Joao";
 };
 
-class Usuario inherits Pessoa {
+Class Usuario inherits Pessoa {
   teste(): String {
     {
       "Helo";
       "World!";
     }
   };
-}
+};
 
-class Relogio {
+Class Relogio {
   horas: Int <- 0;
   minutos: Int <- 0;
 
